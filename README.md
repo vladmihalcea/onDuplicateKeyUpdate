@@ -27,3 +27,11 @@ testConcurrentFindOrCreate(com.example.demo.OnDuplicateKeyUpdateTests)
 java.lang.AssertionError: 
 Expected size:<2> but was:<1> in: [...]
 </pre>
+
+# Explanation
+
+The reason why it's not working for you is because every `Bean` row will have its own unique identifier. For this to work, you need to materialize the conflict on the same value.
+
+Hence, either the rows that you want to insert have the same Primary Key, as [explained in my article](https://vladmihalcea.com/2017/11/06/how-do-upsert-and-merge-work-in-oracle-sql-server-postgresql-and-mysql/), or the records you want to insert have different Primary Keys, but then you need to have a UNIQUE column with the same value shared between the two records you want to insert.
+
+MERGE and UPSERT only work if you suspply the same filtering criteria, hence the same Primary Key or Unique Key value.
